@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="24dp"
+    android:background="#F5F5F5">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Accelerometer Sensor"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        android:textColor="#222222"
+        android:layout_marginBottom="40dp" />
+
+    <TextView
+        android:id="@+id/tvX"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="X Value: 0.0"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:textColor="#1565C0"
+        android:gravity="center"
+        android:padding="20dp"
+        android:background="#FFFFFF"
+        android:layout_marginBottom="20dp" />
+
+    <TextView
+        android:id="@+id/tvY"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Y Value: 0.0"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:textColor="#2E7D32"
+        android:gravity="center"
+        android:padding="20dp"
+        android:background="#FFFFFF" />
+</LinearLayout>
+
+main activity 
+
+package com.example.p11;
+
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
+import android.os.Bundle;
+import android.widget.TextView;
+import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AppCompatActivity;
+
+public class MainActivity extends AppCompatActivity implements
+        SensorEventListener{
+
+    TextView tvX, tvY;
+    SensorManager sensorManager;
+    Sensor accel;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.activity_main);
+
+        tvX = findViewById(R.id.tvX);
+        tvY = findViewById(R.id.tvY);
+        sensorManager=(SensorManager) getSystemService(SENSOR_SERVICE);
+        accel=sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        sensorManager.registerListener(this, accel,
+                SensorManager.SENSOR_DELAY_NORMAL);
+    }
+    @Override
+    protected void onPause() {
+        super.onPause();
+        sensorManager.unregisterListener(this);
+    }
+    @Override
+    public void onSensorChanged(SensorEvent event){
+        float x=event.values[0];
+        float y=event.values[1];
+        tvX.setText("X Value: " + x);
+        tvY.setText("Y Value: " + y);
+    }
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy){
+    }
+}
